@@ -1,0 +1,17 @@
+{
+  "name": "seb-smart-home",
+  "version": "1.0.0",
+  "description": "Sebcreme's Smart Home (Made)",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.13.3",
+    "johnny-five": "^0.9.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node server.js",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
