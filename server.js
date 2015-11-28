@@ -3,7 +3,8 @@ var express        = require('express');
 var app            = express();  
 var httpServer = require("http").createServer(app);  
 var five = require("johnny-five");  
- 
+
+var plot = require('./plot') 
 var port = 3000; 
 var celsius = 17
 
@@ -24,12 +25,20 @@ board.on("ready", function() {
       pin: "A0"
     });   
     temperature.on("data", function() {
-      console.log(this.celsius + "°C");
       celsius = this.celsius
     });
 });
 
-app.get('/open', function(req, res, next){
+// Server
+app.get('/', function(req, res, next){
+  res.sendFile(__dirname + '/index.html')
+})
+
+app.get('/temperature', function(req, res){
+  res.send({temperature : celsius})
+})
+
+app.get('/blinds/up', function(req, res, next){
   console.log('open')
   open.high()
   setTimeout( function(){
@@ -39,7 +48,7 @@ app.get('/open', function(req, res, next){
   
 })
 
-app.get('/close', function(req, res, next){
+app.get('/blinds/down', function(req, res, next){
   console.log('close')
   close.high()
   setTimeout( function(){
@@ -48,3 +57,7 @@ app.get('/close', function(req, res, next){
   res.send('OK')
   
 })
+
+setInterval(function(){
+  plot(celsius)
+}, 60*1000*5)

@@ -4,7 +4,9 @@
   "description": "Sebcreme's Smart Home (Made)",
   "main": "server.js",
   "dependencies": {
+    "dateformat": "^1.0.11",
     "express": "^4.13.3",
+    "google-spreadsheet": "^1.0.1",
     "johnny-five": "^0.9.9"
   },
   "devDependencies": {},

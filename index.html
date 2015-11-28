@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+	h1 {
+		color : white;
+	}
+	.container {
+		display: flex;
+		justify-content: center;
+		text-align: center;
+		flex-wrap: wrap;
+	}
+	.block {
+		width : 300px;
+		height : 300px;
+		flex-grow : 1;
+		display: flex;
+		align-items: center;
+	}
+	#temperature {
+		background-color: #E91E63;
+		color:white;
+	}
+	#blinds {
+		display:flex;
+		background-color: #673AB7;
+		justify-content: center;
+		align-items : center;
+	}
+	button {
+		background-color: #AB47BC;
+		border : none;
+		color : white;
+		margin: 5px;
+		padding: 10px;
+		font-size: 3em;
+	}
+	button:hover {
+		background-color: #E040FB;
+	}
+
+	</style>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.2/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.2/react-dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+	<title>Sebcreme Smart Home</title>
+</head>
+
+<body onload="">
+
+<div class="container">
+	<div id="temperature" class="block"></div>
+	<div id="blinds" class="block"><h1>Volets</h1></div>
+	<iframe src="https://docs.google.com/spreadsheets/d/10Q6yoPV8rdH8ia-hq7piLEfo4QeYoksFwtRUlQKU3P0/pubchart?oid=566672671&amp;format=interactive" width=600 height=400></iframe>
+</div>
+
+
+
+<script type="text/babel">
+	  var Blinds = React.createClass({
+	  	render: function(){
+	  		return <div>
+	  		<h1>Volets</h1>
+	  		<Button name="↑" url='/blinds/up'></Button>
+	  		<Button name="↓" url='/blinds/down'></Button>
+	  		</div>
+	  	}
+	  })
+	  var Button = React.createClass({
+	  	handleClick: function() {
+	  		let c = this
+	  		fetch(this.props.url).then(function(res){
+	  			if (res.status == 200)
+	  				console.log(c.props.name + ' OK')
+	  			else console.log(c.props.name + ' NOK')
+	  		}).catch(function(ex){
+	  			console.log('impossible to execute '+c.props.url)
+	  		})
+	  	},
+	  	render: function(){
+	  		return <button onClick={this.handleClick}>{this.props.name}</button>;
+	  	}
+	  })
+      var Hello = React.createClass({
+		    getInitialState: function() {
+		    	return {data: []};
+		  	},
+		  	loadTemp: function(){
+		  		let component = this
+		  		fetch(component.props.url)
+				  .then(function(response) {
+				    return response.json()
+				  }).then(function(res) {
+				    console.log('parsed json', res)
+				    let temperature = Math.round(res.temperature * 10) / 10
+				    component.setState({temp: temperature});
+				  }).catch(function(ex) {
+				    console.log('parsing failed', ex)
+				  })
+		  	},
+		  	componentDidMount: function() {
+		  		setInterval(this.loadTemp, 1000)
+			},
+		    render: function() {
+		        return <h1>Temperature du salon {this.state.temp}°</h1>;
+		    }
+	});
+ ReactDOM.render(<Hello url="/temperature" />, document.getElementById('temperature'));
+ ReactDOM.render(<Blinds/>, document.getElementById('blinds'));
+
+</script>
+
+</body>
+</html>
